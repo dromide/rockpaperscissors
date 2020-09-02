@@ -1,22 +1,126 @@
 const game = () => {
     let pScore = 0;
-    let cSorse = 0;
+    let cScore = 0;
 
+    //start the Game
     const startGame = () => {
         const playBtn = document.querySelector(".intro button");
         const introScreen = document.querySelector(".intro");
         const match = document.querySelector(".match");
 
         playBtn.addEventListener("click", () => {
-            introScreen.classList.add("fadeout");
+            introScreen.classList.add("fadeOut");
+            match.classList.add("fadeIn");
+        });
+    };
+    //Play match
+    const playMatch = () => {
+        const options = document.querySelectorAll(".options button");
+        const playerHand = document.querySelector(".player-hand");
+        const computerHand = document.querySelector(".computer-hand");
+        const hands = document.querySelectorAll(".hands img");
+
+        hands.forEach(hand => {
+            hand.addEventListener("animationend", function () {
+                this.style.animation = "";
+            });
+        });
+        // Computer Options
+        const computerOptions = ["rock", "paper", "scissors"];
+
+        options.forEach(option => {
+            option.addEventListener("click", function () {
+                // console.log(this);
+                // Computer Choice
+                const computerNumber = Math.floor(Math.random() * 3);
+                //console.log(computerNumber);
+                const computerChoice = computerOptions[computerNumber];
+                // console.log(computerChoice);
+
+                setTimeout(() => {
+                    // Here is where we call compare hands
+                    computerHands(this.textContent, computerChoice);
+                    //Update Images
+                    playerHand.src = `./assets/${this.textContent}.png`;
+                    computerHand.src = `./assets/${computerChoice}.png`;
+                }, 2000);
+
+                //Animation
+                playerHand.style.animation = "shakePlayer 2s ease";
+                computerHand.style.animation = "shakeComputer 2s ease";
+
+            });
         });
     };
 
-    //Is call all the inner function
-    startGame();
-    updateScore();
+    const updateScore = () => {
+        const playerScore = document.querySelector('.player-score p');
+        const ComputerScore = document.querySelector('.computer-score p');
+        playerScore.textContent = pScore;
+        ComputerScore.textContent = cScore;
+    }
 
+
+
+    const computerHands = (playerChoice, computerChoice) => {
+        // Update Text
+        const winner = document.querySelector(".winner");
+        // we are checking for a tie
+        if (playerChoice === computerChoice) {
+            winner.textContent = 'It is a tie';
+            return;
+        }
+        // Check for Rock
+        if (playerChoice === 'rock') {
+            if (computerChoice === 'scissors') {
+                winner.textContent = 'Player Wins';
+                pScore++;
+                updateScore();
+                return;
+            } else {
+                winner.textContent = 'Computer Wins';
+                cScore++;
+                updateScore();
+                return;
+            }
+        }
+
+        // Check for paper
+        if (playerChoice === 'paper') {
+            if (computerChoice === 'scissors') {
+                winner.textContent = 'Computer Wins';
+                cScore++;
+                updateScore();
+                return;
+            } else {
+                winner.textContent = 'Player Wins';
+                pScore++;
+                updateScore();
+                return;
+            }
+        }
+        // Check for scissors
+        if (playerChoice === 'scissors') {
+            if (computerChoice === 'rock') {
+                winner.textContent = 'Computer Wins';
+                cScore++;
+                updateScore();
+                return;
+            } else {
+                winner.textContent = 'Player Wins';
+                pScore++;
+                updateScore();
+                return;
+            }
+        }
+
+    };
+
+
+    // Is call all the inner function
+    startGame();
+    playMatch();
 };
 
-//start the game function
+// start the game function
 game();
